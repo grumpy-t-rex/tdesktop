@@ -486,11 +486,6 @@ void SetupSystemIntegrationOptions(not_null<Ui::VerticalLayout*> container) {
 	}
 }
 
-void SetupPerformance(
-		not_null<Window::SessionController*> controller,
-		not_null<Ui::VerticalLayout*> container) {
-}
-
 void SetupSystemIntegration(
 		not_null<Ui::VerticalLayout*> container,
 		Fn<void(Type)> showOther) {
@@ -554,9 +549,6 @@ void Advanced::setupContent(not_null<Window::SessionController*> controller) {
 	});
 
 	AddDivider(content);
-	AddSkip(content);
-	AddSubsectionTitle(content, tr::lng_settings_performance());
-	SetupPerformance(controller, content);
 	AddSkip(content);
 
 	if (HasSystemSpellchecker()) {
