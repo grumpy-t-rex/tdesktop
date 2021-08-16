@@ -1656,25 +1656,15 @@ bool StickersBox::Inner::shiftingAnimationCallback(crl::time now) {
 				updateMin = i;
 			}
 			updateMax = i;
-			if (start + st::stickersRowDuration > now && now >= start) {
-				_rows[i]->yadd.update(float64(now - start) / st::stickersRowDuration, anim::sineInOut);
-				animating = true;
-			} else {
-				_rows[i]->yadd.finish();
-				_shiftingStartTimes[i] = 0;
-			}
+			_rows[i]->yadd.finish();
+			_shiftingStartTimes[i] = 0;
 		}
 	}
 	if (_aboveShadowFadeStart) {
 		if (updateMin < 0 || updateMin > _above) updateMin = _above;
 		if (updateMax < _above) updateMin = _above;
-		if (_aboveShadowFadeStart + st::stickersRowDuration > now && now > _aboveShadowFadeStart) {
-			_aboveShadowFadeOpacity.update(float64(now - _aboveShadowFadeStart) / st::stickersRowDuration, anim::sineInOut);
-			animating = true;
-		} else {
-			_aboveShadowFadeOpacity.finish();
-			_aboveShadowFadeStart = 0;
-		}
+		_aboveShadowFadeOpacity.finish();
+		_aboveShadowFadeStart = 0;
 	}
 	if (_dragging >= 0) {
 		if (updateMin < 0 || updateMin > _dragging) {

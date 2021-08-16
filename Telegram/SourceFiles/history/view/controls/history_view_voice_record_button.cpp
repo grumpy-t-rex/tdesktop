@@ -95,18 +95,14 @@ void PerformAnimation(
 			applyValue = std::move(applyValue),
 			finishCallback = std::move(finishCallback),
 			&lifetime](crl::time now) mutable {
-		const auto dt = 1.;
-		if (dt >= 1.) {
+
 			animValue->finish();
 			applyValue(animValue->current());
 			lifetime.destroy();
 			if (finishCallback) {
 				finishCallback();
 			}
-		} else {
-			animValue->update(dt, anim::linear);
-			applyValue(animValue->current());
-		}
+
 	}, lifetime);
 }
 

@@ -879,14 +879,9 @@ bool OverlayWidget::stateAnimationCallback(crl::time now) {
 	for (auto i = begin(_animations); i != end(_animations);) {
 		const auto [state, started] = *i;
 		updateOverRect(state);
-		const auto dt = float64(now - started) / st::mediaviewFadeDuration;
-		if (dt >= 1) {
-			_animationOpacities.erase(state);
-			i = _animations.erase(i);
-		} else {
-			_animationOpacities[state].update(dt, anim::linear);
-			++i;
-		}
+
+		_animationOpacities.erase(state);
+		i = _animations.erase(i);
 	}
 	return !_animations.empty() || updateControlsAnimation(now);
 }

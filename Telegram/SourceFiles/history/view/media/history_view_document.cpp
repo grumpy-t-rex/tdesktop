@@ -980,16 +980,10 @@ bool Document::voiceProgressAnimationCallback(crl::time now) {
 	now += (2 * kAudioVoiceMsgUpdateView);
 	if (const auto voice = Get<HistoryDocumentVoice>()) {
 		if (voice->_playback) {
-			const auto dt = (now - voice->_playback->progressAnimation.started())
-				/ float64(2 * kAudioVoiceMsgUpdateView);
-			if (dt >= 1.) {
-				voice->_playback->progressAnimation.stop();
-				voice->_playback->progress.finish();
-			} else {
-				voice->_playback->progress.update(qMin(dt, 1.), anim::linear);
-			}
+			voice->_playback->progressAnimation.stop();
+			voice->_playback->progress.finish();
 			history()->owner().requestViewRepaint(_parent);
-			return (dt < 1.);
+			return false;
 		}
 	}
 	return false;

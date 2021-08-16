@@ -1280,13 +1280,8 @@ bool InnerWidget::pinnedShiftAnimationCallback(crl::time now) {
 			wasAnimating = true;
 			if (updateMin < 0) updateMin = i;
 			updateMax = i;
-			if (start + st::stickersRowDuration > now && now >= start) {
-				_pinnedRows[i].yadd.update(float64(now - start) / st::stickersRowDuration, anim::sineInOut);
-				animating = true;
-			} else {
-				_pinnedRows[i].yadd.finish();
-				_pinnedRows[i].animStartTime = 0;
-			}
+			_pinnedRows[i].yadd.finish();
+			_pinnedRows[i].animStartTime = 0;
 		}
 	}
 	updateReorderIndexGetCount();

@@ -130,26 +130,16 @@ void PlaybackProgress::setAvailableTill(float64 value) {
 
 bool PlaybackProgress::valueAnimationCallback(float64 now) {
 	const auto time = (now - _valueAnimation.started());
-	const auto dt = 1.;
-	if (dt >= 1.) {
-		a_value.finish();
-	} else {
-		a_value.update(dt, anim::linear);
-	}
+	a_value.finish();
 	emitUpdatedValue();
-	return (dt < 1.);
+	return false;
 }
 
 bool PlaybackProgress::availableTillAnimationCallback(float64 now) {
 	const auto time = now - _availableTillAnimation.started();
-	const auto dt = 1.;
-	if (dt >= 1.) {
-		a_availableTill.finish();
-	} else {
-		a_availableTill.update(dt, anim::linear);
-	}
+	a_availableTill.finish();
 	emitUpdatedValue();
-	return (dt < 1.);
+	return false;
 }
 
 void PlaybackProgress::emitUpdatedValue() {

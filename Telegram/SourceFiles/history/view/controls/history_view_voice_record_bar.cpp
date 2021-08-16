@@ -503,16 +503,10 @@ void ListenWrap::initPlayProgress() {
 	auto animationCallback = [=](crl::time now) {
 		now += kAudioVoiceUpdateView;
 
-		const auto dt = (now - animation->started())
-			/ float64(kAudioVoiceUpdateView);
-		if (dt >= 1.) {
-			animation->stop();
-			_playProgress.finish();
-		} else {
-			_playProgress.update(std::min(dt, 1.), anim::linear);
-		}
+		animation->stop();
+		_playProgress.finish();
 		_parent->update(_waveformFgRect);
-		return (dt < 1.);
+		return false;
 	};
 	animation->init(std::move(animationCallback));
 

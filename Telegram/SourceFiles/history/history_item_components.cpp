@@ -723,14 +723,9 @@ bool ReplyKeyboard::selectedAnimationCallback(crl::time now) {
 		const auto index = std::abs(i->first) - 1;
 		const auto row = (index / MatrixRowShift);
 		const auto col = index % MatrixRowShift;
-		const auto dt = float64(now - i->second) / st::botKbDuration;
-		if (dt >= 1) {
-			_rows[row][col].howMuchOver = (i->first > 0) ? 1 : 0;
-			i = _animations.erase(i);
-		} else {
-			_rows[row][col].howMuchOver = (i->first > 0) ? dt : (1 - dt);
-			++i;
-		}
+
+		_rows[row][col].howMuchOver = (i->first > 0) ? 1 : 0;
+		i = _animations.erase(i);
 	}
 	_st->repaint(_item);
 	return !_animations.empty();
