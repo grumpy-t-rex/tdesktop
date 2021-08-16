@@ -21,7 +21,6 @@ void SetupConnectionType(
 bool HasUpdate();
 void SetupUpdate(not_null<Ui::VerticalLayout*> container);
 void SetupSystemIntegrationContent(not_null<Ui::VerticalLayout*> container);
-void SetupAnimations(not_null<Ui::VerticalLayout*> container);
 
 class Advanced : public Section {
 public:

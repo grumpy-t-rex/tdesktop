@@ -486,26 +486,9 @@ void SetupSystemIntegrationOptions(not_null<Ui::VerticalLayout*> container) {
 	}
 }
 
-void SetupAnimations(not_null<Ui::VerticalLayout*> container) {
-	AddButton(
-		container,
-		tr::lng_settings_enable_animations(),
-		st::settingsButton
-	)->toggleOn(
-		rpl::single(!anim::Disabled())
-	)->toggledValue(
-	) | rpl::filter([](bool enabled) {
-		return (enabled == anim::Disabled());
-	}) | rpl::start_with_next([](bool enabled) {
-		anim::SetDisabled(!enabled);
-		Local::writeSettings();
-	}, container->lifetime());
-}
-
 void SetupPerformance(
 		not_null<Window::SessionController*> controller,
 		not_null<Ui::VerticalLayout*> container) {
-	SetupAnimations(container);
 }
 
 void SetupSystemIntegration(
