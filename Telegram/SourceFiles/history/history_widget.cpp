@@ -187,9 +187,8 @@ HistoryWidget::HistoryWidget(
 	tr::lng_profile_join_channel(tr::now).toUpper(),
 	st::historyComposeButton)
 , _muteUnmute(
-	this,
 	tr::lng_channel_mute(tr::now).toUpper(),
-	st::historyComposeButton)
+	this)
 , _attachToggle(this, st::historyAttach)
 , _tabbedSelectorToggle(this, st::historyAttachEmoji)
 , _botKeyboardShow(this, st::historyBotKeyboardShow)
@@ -235,7 +234,7 @@ HistoryWidget::HistoryWidget(
 	_unblock->addClickHandler([=] { unblockUser(); });
 	_botStart->addClickHandler([=] { sendBotStartCommand(); });
 	_joinChannel->addClickHandler([=] { joinChannel(); });
-	_muteUnmute->addClickHandler([=] { toggleMuteUnmute(); });
+	connect(_muteUnmute, &QAbstractButton::clicked, [=] { toggleMuteUnmute(); });
 	connect(
 		_field,
 		&Ui::InputField::submitted,
@@ -2123,7 +2122,7 @@ void HistoryWidget::updateControlsVisibility() {
 			_joinChannel->hide();
 			_botStart->hide();
 			if (_muteUnmute->isHidden()) {
-				_muteUnmute->clearState();
+				_muteUnmute->setDisabled(false);
 				_muteUnmute->show();
 			}
 		} else if (isBotStart()) {

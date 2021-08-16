@@ -19,6 +19,8 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "base/flags.h"
 #include "base/timer.h"
 
+#include <QPushButton>
+
 class RPCError;
 struct FileLoadResult;
 struct SendingAlbum;
@@ -669,7 +671,7 @@ private:
 	object_ptr<Ui::FlatButton> _unblock;
 	object_ptr<Ui::FlatButton> _botStart;
 	object_ptr<Ui::FlatButton> _joinChannel;
-	object_ptr<Ui::FlatButton> _muteUnmute;
+	object_ptr<QPushButton> _muteUnmute;
 	object_ptr<Ui::IconButton> _attachToggle;
 	object_ptr<Ui::EmojiButton> _tabbedSelectorToggle;
 	object_ptr<Ui::IconButton> _botKeyboardShow;
