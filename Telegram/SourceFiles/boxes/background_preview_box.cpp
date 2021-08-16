@@ -651,7 +651,7 @@ void BackgroundPreviewBox::radialAnimationCallback(crl::time now) {
 		!document->loading(),
 		now);
 	if ((wasAnimating || _radial.animating())
-		&& (!anim::Disabled() || updated)) {
+		&& updated) {
 		update(radialRect());
 	}
 	checkLoadedDocument();

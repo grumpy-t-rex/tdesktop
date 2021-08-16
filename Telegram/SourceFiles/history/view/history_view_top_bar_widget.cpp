@@ -181,9 +181,6 @@ void TopBarWidget::updateConnectingState() {
 }
 
 void TopBarWidget::connectingAnimationCallback() {
-	if (!anim::Disabled()) {
-		update();
-	}
 }
 
 void TopBarWidget::refreshLang() {

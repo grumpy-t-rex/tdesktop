@@ -501,9 +501,7 @@ void ListenWrap::initPlayProgress() {
 	}, _lifetime);
 
 	auto animationCallback = [=](crl::time now) {
-		if (anim::Disabled()) {
-			now += kAudioVoiceUpdateView;
-		}
+		now += kAudioVoiceUpdateView;
 
 		const auto dt = (now - animation->started())
 			/ float64(kAudioVoiceUpdateView);
@@ -1349,18 +1347,6 @@ void VoiceRecordBar::drawDuration(Painter &p) {
 }
 
 void VoiceRecordBar::startRedCircleAnimation() {
-	if (anim::Disabled()) {
-		return;
-	}
-	const auto animation = _recordingLifetime
-		.make_state<Ui::Animations::Basic>();
-	animation->init([=](crl::time now) {
-		const auto diffTime = now - animation->started();
-		_redCircleProgress = std::abs(std::sin(diffTime / 400.));
-		update(_redCircleRect);
-		return true;
-	});
-	animation->start();
 }
 
 void VoiceRecordBar::drawRedCircle(Painter &p) {

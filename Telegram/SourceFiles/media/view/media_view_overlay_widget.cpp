@@ -875,9 +875,7 @@ auto OverlayWidget::computeOverviewType() const
 }
 
 bool OverlayWidget::stateAnimationCallback(crl::time now) {
-	if (anim::Disabled()) {
-		now += st::mediaviewShowDuration + st::mediaviewHideDuration;
-	}
+	now += st::mediaviewShowDuration + st::mediaviewHideDuration;
 	for (auto i = begin(_animations); i != end(_animations);) {
 		const auto [state, started] = *i;
 		updateOverRect(state);
@@ -929,9 +927,6 @@ bool OverlayWidget::updateControlsAnimation(crl::time now) {
 }
 
 void OverlayWidget::waitingAnimationCallback() {
-	if (!anim::Disabled()) {
-		update(radialRect());
-	}
 }
 
 void OverlayWidget::updateCursor() {
@@ -1064,7 +1059,7 @@ bool OverlayWidget::radialAnimationCallback(crl::time now) {
 		!radialLoading(),
 		now + radialTimeShift());
 	if ((wasAnimating || _radial.animating())
-		&& (!anim::Disabled() || updated)) {
+		&& updated) {
 		update(radialRect());
 	}
 	const auto ready = _document && _documentMedia->loaded();

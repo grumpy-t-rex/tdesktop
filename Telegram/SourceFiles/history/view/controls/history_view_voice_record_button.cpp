@@ -95,9 +95,7 @@ void PerformAnimation(
 			applyValue = std::move(applyValue),
 			finishCallback = std::move(finishCallback),
 			&lifetime](crl::time now) mutable {
-		const auto dt = anim::Disabled()
-			? 1.
-			: ((now - animStarted) / duration);
+		const auto dt = 1.;
 		if (dt >= 1.) {
 			animValue->finish();
 			applyValue(animValue->current());
@@ -596,20 +594,7 @@ void RecordCircle::paint(Painter &p, QColor c) {
 
 	const auto &mainRadius = st::historyRecordLevelMainRadiusAmplitude;
 	const auto radius = (st::historyRecordLevelMainRadius
-		+ (anim::Disabled() ? 0 : mainRadius * _levelValue.current()));
-
-	if (!anim::Disabled()) {
-		_majorWave->tick(radius, dt);
-		_minorWave->tick(radius, dt);
-		_lastUpdateTime = crl::now();
-
-		const auto opacity = p.opacity();
-		p.setOpacity(kOpacityMajor);
-		_majorWave->paint(p, c);
-		p.setOpacity(kOpacityMinor);
-		_minorWave->paint(p, c);
-		p.setOpacity(opacity);
-	}
+		+ 0);
 
 	p.setPen(Qt::NoPen);
 	p.setBrush(c);
@@ -624,9 +609,6 @@ VoiceRecordButton::VoiceRecordButton(
 	_recordAnimationTicked.events()))
 , _center(st::historyRecordLevelMaxRadius)
 , _recordingAnimation([=](crl::time now) {
-	if (!anim::Disabled()) {
-		update();
-	}
 	_recordAnimationTicked.fire_copy(now);
 	return true;
 }) {

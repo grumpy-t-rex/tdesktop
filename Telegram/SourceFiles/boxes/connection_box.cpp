@@ -348,9 +348,6 @@ void ProxyRow::updateFields(View &&view) {
 }
 
 void ProxyRow::radialAnimationCallback() {
-	if (!anim::Disabled()) {
-		update();
-	}
 }
 
 int ProxyRow::resizeGetHeight(int newWidth) {
@@ -465,7 +462,7 @@ void ProxyRow::paintCheck(Painter &p) {
 	p.setPen(pen);
 	p.setBrush(_st->bg);
 	const auto rect = style::rtlrect(QRectF(left, top, _st->diameter, _st->diameter).marginsRemoved(QMarginsF(_st->thickness / 2., _st->thickness / 2., _st->thickness / 2., _st->thickness / 2.)), outerWidth);
-	if (_progress && loading.shown > 0 && anim::Disabled()) {
+	if (_progress && loading.shown > 0) {
 		anim::DrawStaticLoading(
 			p,
 			rect,
@@ -478,7 +475,7 @@ void ProxyRow::paintCheck(Painter &p) {
 		p.drawEllipse(rect);
 	}
 
-	if (toggled > 0 && (!_progress || !anim::Disabled())) {
+	if (toggled > 0 && (!_progress)) {
 		p.setPen(Qt::NoPen);
 		p.setBrush(anim::brush(_st->untoggledFg, _st->toggledFg, toggled * set));
 

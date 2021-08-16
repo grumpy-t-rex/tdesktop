@@ -241,7 +241,7 @@ bool SendActionPainter::updateNeedsAnimating(crl::time now, bool force) {
 		}
 	}
 	const auto result = (!_typing.empty() || !_sendActions.empty());
-	if (changed || (result && !anim::Disabled())) {
+	if (changed) {
 		_history->peer->owner().updateSendActionAnimation({
 			_history,
 			_sendActionAnimation.width(),

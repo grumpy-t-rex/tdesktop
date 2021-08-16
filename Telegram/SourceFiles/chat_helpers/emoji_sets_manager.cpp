@@ -294,7 +294,7 @@ void Row::paintRadio(Painter &p) {
 		_st->thickness / 2.,
 		_st->thickness / 2.
 	)), outerWidth);
-	if (loading.shown > 0 && anim::Disabled()) {
+	if (loading.shown > 0) {
 		anim::DrawStaticLoading(
 			p,
 			rect,
@@ -307,7 +307,7 @@ void Row::paintRadio(Painter &p) {
 		p.drawEllipse(rect);
 	}
 
-	if (toggled > 0 && (!_loading || !anim::Disabled())) {
+	if (toggled > 0 && (!_loading)) {
 		p.setPen(Qt::NoPen);
 		p.setBrush(anim::brush(_st->untoggledFg, _st->toggledFg, toggled));
 
@@ -480,7 +480,7 @@ void Row::radialAnimationCallback(crl::time now) {
 		}
 		return false;
 	}();
-	if (!anim::Disabled() || updated) {
+	if (updated) {
 		update();
 	}
 }

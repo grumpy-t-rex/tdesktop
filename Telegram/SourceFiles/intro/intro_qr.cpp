@@ -148,21 +148,6 @@ namespace {
 			st::introQrCenterSize,
 			st::introQrCenterSize);
 		p.drawImage(rect, state->center);
-		if (!anim::Disabled() && state->waiting.animating()) {
-			auto hq = PainterHighQualityEnabler(p);
-			const auto line = st::radialLine;
-			const auto radial = state->waiting.computeState();
-			auto pen = st::activeButtonBg->p;
-			pen.setWidth(line);
-			pen.setCapStyle(Qt::RoundCap);
-			p.setOpacity(radial.shown * (1. - shown));
-			p.setPen(pen);
-			p.drawArc(
-				rect.marginsAdded({ line, line, line, line }),
-				radial.arcFrom,
-				radial.arcLength);
-			p.setOpacity(1.);
-		}
 	}, result->lifetime());
 	return result;
 }

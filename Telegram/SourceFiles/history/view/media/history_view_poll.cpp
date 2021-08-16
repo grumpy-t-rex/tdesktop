@@ -419,25 +419,7 @@ void Poll::updateTexts() {
 }
 
 void Poll::checkQuizAnswered() {
-	if (!_voted || !_votedFromHere || !_poll->quiz() || anim::Disabled()) {
-		return;
-	}
-	const auto i = ranges::find(_answers, true, &Answer::chosen);
-	if (i == end(_answers)) {
-		return;
-	}
-	if (i->correct) {
-		_fireworksAnimation = std::make_unique<Ui::FireworksAnimation>(
-			[=] { history()->owner().requestViewRepaint(_parent); });
-	} else {
-		_wrongAnswerAnimation.start(
-			[=] { history()->owner().requestViewRepaint(_parent); },
-			0.,
-			1.,
-			kRollDuration,
-			anim::linear);
-		showSolution();
-	}
+	return;
 }
 
 void Poll::showSolution() const {
@@ -858,9 +840,6 @@ void Poll::resetAnswersAnimation() const {
 }
 
 void Poll::radialAnimationCallback() const {
-	if (!anim::Disabled()) {
-		history()->owner().requestViewRepaint(_parent);
-	}
 }
 
 void Poll::paintRecentVoters(
@@ -922,13 +901,6 @@ void Poll::paintCloseByTimer(
 	const auto radial = std::min(_close->duration, kLargestRadialDuration);
 	if (!left) {
 		_close->radial.stop();
-	} else if (left < radial && !anim::Disabled()) {
-		if (!_close->radial.animating()) {
-			_close->radial.init([=] {
-				history()->owner().requestViewRepaint(_parent);
-			});
-			_close->radial.start();
-		}
 	} else {
 		_close->radial.stop();
 	}
@@ -970,7 +942,7 @@ void Poll::paintCloseByTimer(
 		icon.paint(p, x, y, width());
 	}
 
-	if (left > (anim::Disabled() ? 0 : (radial - 1))) {
+	if (left > 0) {
 		const auto next = (left % 1000);
 		_close->timer.callOnce((next ? next : 1000) + 1);
 	}
@@ -1125,19 +1097,7 @@ void Poll::paintRadio(
 	const auto rect = QRectF(left, top, st.diameter, st.diameter).marginsRemoved(QMarginsF(st.thickness / 2., st.thickness / 2., st.thickness / 2., st.thickness / 2.));
 	if (_sendingAnimation && _sendingAnimation->option == answer.option) {
 		const auto &active = selected ? (outbg ? st::msgOutServiceFgSelected : st::msgInServiceFgSelected) : (outbg ? st::msgOutServiceFg : st::msgInServiceFg);
-		if (anim::Disabled()) {
-			anim::DrawStaticLoading(p, rect, st.thickness, active);
-		} else {
-			const auto state = _sendingAnimation->animation.computeState();
-			auto pen = anim::pen(regular, active, state.shown);
-			pen.setWidth(st.thickness);
-			pen.setCapStyle(Qt::RoundCap);
-			p.setPen(pen);
-			p.drawArc(
-				rect,
-				state.arcFrom,
-				state.arcLength);
-		}
+		anim::DrawStaticLoading(p, rect, st.thickness, active);
 	} else {
 		if (checkmark < 1.) {
 			auto pen = regular->p;

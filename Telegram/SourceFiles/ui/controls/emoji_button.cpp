@@ -55,7 +55,7 @@ void EmojiButton::paintEvent(QPaintEvent *e) {
 		: (over
 			? st::historyEmojiCircleFgOver
 			: st::historyEmojiCircleFg));
-	if (anim::Disabled() && _loading && _loading->animating()) {
+	if (_loading && _loading->animating()) {
 		anim::DrawStaticLoading(
 			p,
 			inner,
@@ -78,9 +78,6 @@ void EmojiButton::paintEvent(QPaintEvent *e) {
 }
 
 void EmojiButton::loadingAnimationCallback() {
-	if (!anim::Disabled()) {
-		update();
-	}
 }
 
 void EmojiButton::setLoading(bool loading) {

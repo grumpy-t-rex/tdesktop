@@ -251,7 +251,7 @@ void RadialProgressItem::radialAnimationCallback(crl::time now) const {
 	const auto updated = [&] {
 		return _radial->update(dataProgress(), dataFinished(), now);
 	}();
-	if (!anim::Disabled() || updated) {
+	if (updated) {
 		parent()->history()->session().data().requestItemRepaint(parent());
 	}
 	if (!_radial->animating()) {

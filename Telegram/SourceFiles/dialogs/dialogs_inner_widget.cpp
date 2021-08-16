@@ -1094,8 +1094,7 @@ void InnerWidget::mousePressEvent(QMouseEvent *e) {
 			rtlupdate(0, searchedOffset() + index * st::dialogsRowHeight, width(), st::dialogsRowHeight);
 		});
 	}
-	if (anim::Disabled()
-		&& (!_pressed || !_pressed->entry()->isPinnedDialog(_filterId))) {
+	if (!_pressed || !_pressed->entry()->isPinnedDialog(_filterId)) {
 		mousePressReleased(e->globalPos(), e->button());
 	}
 }
@@ -1269,9 +1268,7 @@ bool InnerWidget::updateReorderPinned(QPoint localPosition) {
 }
 
 bool InnerWidget::pinnedShiftAnimationCallback(crl::time now) {
-	if (anim::Disabled()) {
-		now += st::stickersRowDuration;
-	}
+	now += st::stickersRowDuration;
 
 	auto wasAnimating = false;
 	auto animating = false;

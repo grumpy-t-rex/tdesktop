@@ -850,9 +850,7 @@ void StickersListWidget::Footer::paintSetIcon(
 }
 
 bool StickersListWidget::Footer::iconsAnimationCallback(crl::time now) {
-	if (anim::Disabled()) {
-		now += st::stickerIconMove;
-	}
+	now += st::stickerIconMove;
 	if (_iconsStartAnim) {
 		const auto dt = (now - _iconsStartAnim) / float64(st::stickerIconMove);
 		if (dt >= 1.) {

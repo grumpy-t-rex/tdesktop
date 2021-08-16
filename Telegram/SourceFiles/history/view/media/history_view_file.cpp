@@ -76,7 +76,7 @@ void File::radialAnimationCallback(crl::time now) const {
 			dataFinished(),
 			now);
 	}();
-	if (!anim::Disabled() || updated) {
+	if (updated) {
 		history()->owner().requestViewRepaint(_parent);
 	}
 	if (!_animation->radial.animating()) {

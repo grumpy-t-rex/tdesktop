@@ -1645,9 +1645,7 @@ void StickersBox::Inner::leaveToChildEvent(QEvent *e, QWidget *child) {
 }
 
 bool StickersBox::Inner::shiftingAnimationCallback(crl::time now) {
-	if (anim::Disabled()) {
-		now += st::stickersRowDuration;
-	}
+	now += st::stickersRowDuration;
 	auto animating = false;
 	auto updateMin = -1;
 	auto updateMax = 0;

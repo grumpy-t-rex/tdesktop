@@ -67,9 +67,6 @@ void Progress::paintEvent(QPaintEvent *e) {
 }
 
 void Progress::animationStep() {
-	if (!anim::Disabled()) {
-		update();
-	}
 }
 
 } // namespace

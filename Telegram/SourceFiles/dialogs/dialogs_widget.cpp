@@ -107,9 +107,6 @@ void Widget::BottomButton::setText(const QString &text) {
 }
 
 void Widget::BottomButton::radialAnimationCallback() {
-	if (!anim::Disabled() && width() < st::columnMinimalWidthLeft) {
-		update();
-	}
 }
 
 void Widget::BottomButton::onStateChanged(State was, StateChangeSource source) {

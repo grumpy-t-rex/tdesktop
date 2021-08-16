@@ -200,9 +200,6 @@ void LocalStorageBox::Row::toggleProgress(bool shown) {
 }
 
 void LocalStorageBox::Row::radialAnimationCallback() {
-	if (!anim::Disabled()) {
-		RpWidget::update();
-	}
 }
 
 rpl::producer<> LocalStorageBox::Row::clearRequests() const {

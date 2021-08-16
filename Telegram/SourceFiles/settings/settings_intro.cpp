@@ -83,11 +83,9 @@ object_ptr<Ui::RpWidget> CreateIntroSettings(
 	SetupDefaultThemes(window, result);
 	AddSkip(result);
 
-	if (anim::Disabled()) {
-		AddDivider(result);
-		AddSkip(result);
-		AddSkip(result);
-	}
+	AddDivider(result);
+	AddSkip(result);
+	AddSkip(result);
 
 	AddDivider(result);
 	AddSkip(result);

@@ -515,15 +515,7 @@ void Options::Option::show(anim::type animated) {
 }
 
 void Options::Option::destroy(FnMut<void()> done) {
-	if (anim::Disabled() || _wrap->isHidden()) {
-		Ui::PostponeCall(std::move(done));
-		return;
-	}
-	_wrap->hide(anim::type::normal);
-	base::call_delayed(
-		st::slideWrapDuration * 2,
-		_content.get(),
-		std::move(done));
+	Ui::PostponeCall(std::move(done));
 }
 
 std::vector<PollAnswer> Options::toPollAnswers() const {

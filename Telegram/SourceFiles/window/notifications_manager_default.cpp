@@ -459,9 +459,7 @@ void Widget::opacityAnimationCallback() {
 }
 
 bool Widget::shiftAnimationCallback(crl::time now) {
-	if (anim::Disabled()) {
-		now += st::notifyFastAnim;
-	}
+	now += st::notifyFastAnim;
 	const auto dt = (now - _shiftAnimation.started())
 		/ float64(st::notifyFastAnim);
 	if (dt >= 1.) {
@@ -474,7 +472,6 @@ bool Widget::shiftAnimationCallback(crl::time now) {
 }
 
 void Widget::hideSlow() {
-	if (anim::Disabled()) {
 		_hiding = true;
 		base::call_delayed(
 			st::notifySlowHide,
@@ -484,9 +481,6 @@ void Widget::hideSlow() {
 					hideFast();
 				}
 			});
-	} else {
-		hideAnimated(st::notifySlowHide, anim::easeInCirc);
-	}
 }
 
 void Widget::hideFast() {

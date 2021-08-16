@@ -374,7 +374,7 @@ void Gif::radialAnimationCallback(crl::time now) const {
 			!document->loading() || _dataMedia->loaded(),
 			now);
 	}();
-	if (!anim::Disabled() || updated) {
+	if (updated) {
 		update();
 	}
 	if (!_animation->radial.animating() && _dataMedia->loaded()) {
@@ -965,7 +965,7 @@ void File::radialAnimationCallback(crl::time now) const {
 			!_document->loading() || _documentMedia->loaded(),
 			now);
 	}();
-	if (!anim::Disabled() || updated) {
+	if (updated) {
 		update();
 	}
 	if (!_animation->radial.animating()) {
@@ -1536,7 +1536,7 @@ void Game::radialAnimationCallback(crl::time now) const {
 			!document->loading() || _documentMedia->loaded(),
 			now);
 	}();
-	if (!anim::Disabled() || updated) {
+	if (updated) {
 		update();
 	}
 	if (!_radial->animating() && _documentMedia->loaded()) {

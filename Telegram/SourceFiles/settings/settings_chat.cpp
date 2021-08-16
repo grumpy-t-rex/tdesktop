@@ -544,7 +544,7 @@ void BackgroundRow::radialAnimationCallback(crl::time now) {
 		radialProgress(),
 		!radialLoading(),
 		now + radialTimeShift());
-	if (!anim::Disabled() || updated) {
+	if (updated) {
 		rtlupdate(radialRect());
 	}
 }

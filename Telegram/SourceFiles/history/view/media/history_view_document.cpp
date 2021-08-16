@@ -977,9 +977,7 @@ TextState Document::getStateGrouped(
 }
 
 bool Document::voiceProgressAnimationCallback(crl::time now) {
-	if (anim::Disabled()) {
-		now += (2 * kAudioVoiceMsgUpdateView);
-	}
+	now += (2 * kAudioVoiceMsgUpdateView);
 	if (const auto voice = Get<HistoryDocumentVoice>()) {
 		if (voice->_playback) {
 			const auto dt = (now - voice->_playback->progressAnimation.started())
