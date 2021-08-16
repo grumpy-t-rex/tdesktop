@@ -589,8 +589,7 @@ void RecordCircle::paint(Painter &p, QColor c) {
 	_levelValue.update(dt);
 
 	const auto &mainRadius = st::historyRecordLevelMainRadiusAmplitude;
-	const auto radius = (st::historyRecordLevelMainRadius
-		+ 0);
+	const auto radius = st::historyRecordLevelMainRadius;
 
 	p.setPen(Qt::NoPen);
 	p.setBrush(c);
