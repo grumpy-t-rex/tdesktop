@@ -670,7 +670,7 @@ private:
 	const std::shared_ptr<Ui::SendButton> _send;
 	object_ptr<Ui::FlatButton> _unblock;
 	object_ptr<Ui::FlatButton> _botStart;
-	object_ptr<Ui::FlatButton> _joinChannel;
+	object_ptr<QPushButton> _joinChannel;
 	object_ptr<QPushButton> _muteUnmute;
 	object_ptr<Ui::IconButton> _attachToggle;
 	object_ptr<Ui::EmojiButton> _tabbedSelectorToggle;
