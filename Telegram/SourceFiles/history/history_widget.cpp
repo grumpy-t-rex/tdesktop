@@ -193,11 +193,6 @@ HistoryWidget::HistoryWidget(
 , _botKeyboardShow(this, st::historyBotKeyboardShow)
 , _botKeyboardHide(this, st::historyBotKeyboardHide)
 , _botCommandStart(this, st::historyBotCommandStart)
-, _voiceRecordBar(std::make_unique<HistoryWidget::VoiceRecordBar>(
-		this,
-		controller,
-		_send,
-		st::historySendSize.height()))
 , _field(
 	this,
 	st::historyComposeField,
@@ -360,8 +355,6 @@ HistoryWidget::HistoryWidget(
 	_joinChannel->hide();
 	_muteUnmute->hide();
 
-	initVoiceRecordBar();
-
 	_attachToggle->hide();
 	_tabbedSelectorToggle->hide();
 	_botKeyboardShow->hide();
@@ -377,7 +370,7 @@ HistoryWidget::HistoryWidget(
 	_attachDragAreas = DragArea::SetupDragAreaToContainer(
 		this,
 		crl::guard(this, [=](not_null<const QMimeData*> d) {
-			return _history && _canSendMessages && !isRecording();
+			return _history && _canSendMessages;
 		}),
 		crl::guard(this, [=](bool f) { _field->setAcceptDrops(f); }),
 		crl::guard(this, [=] { updateControlsGeometry(); }));
@@ -739,77 +732,6 @@ void HistoryWidget::refreshTabbedPanel() {
 	} else {
 		setTabbedPanel(nullptr);
 	}
-}
-
-void HistoryWidget::initVoiceRecordBar() {
-	{
-		auto scrollHeight = rpl::combine(
-			_scroll->topValue(),
-			_scroll->heightValue()
-		) | rpl::map([=](int top, int height) {
-			return top + height - st::historyRecordLockPosition.y();
-		});
-		_voiceRecordBar->setLockBottom(std::move(scrollHeight));
-	}
-	_voiceRecordBar->setEscFilter([=]() -> bool {
-		return _replyToId || (_nonEmptySelection && _list);
-	});
-
-	_voiceRecordBar->setSendButtonGeometryValue(_send->geometryValue());
-
-	_voiceRecordBar->setStartRecordingFilter([=] {
-		const auto error = _peer
-			? Data::RestrictionError(_peer, ChatRestriction::f_send_media)
-			: std::nullopt;
-		if (error) {
-			Ui::show(Box<InformBox>(*error));
-			return true;
-		} else if (showSlowmodeError()) {
-			return true;
-		}
-		return false;
-	});
-
-	_voiceRecordBar->sendActionUpdates(
-	) | rpl::start_with_next([=](const auto &data) {
-		if (!_history) {
-			return;
-		}
-		session().sendProgressManager().update(
-			_history,
-			data.type,
-			data.progress);
-	}, lifetime());
-
-	_voiceRecordBar->sendVoiceRequests(
-	) | rpl::start_with_next([=](const auto &data) {
-		if (!canWriteMessage() || data.bytes.isEmpty() || !_history) {
-			return;
-		}
-
-		auto action = Api::SendAction(_history);
-		action.replyTo = replyToId();
-		action.options = data.options;
-		session().api().sendVoiceMessage(
-			data.bytes,
-			data.waveform,
-			data.duration,
-			action);
-		_voiceRecordBar->clearListenState();
-	}, lifetime());
-
-	_voiceRecordBar->lockShowStarts(
-	) | rpl::start_with_next([=] {
-		updateHistoryDownVisibility();
-		updateUnreadMentionsVisibility();
-	}, lifetime());
-
-	_voiceRecordBar->updateSendButtonTypeRequests(
-	) | rpl::start_with_next([=] {
-		updateSendButtonType();
-	}, lifetime());
-
-	_voiceRecordBar->hideFast();
 }
 
 void HistoryWidget::initTabbedSelector() {
@@ -1304,9 +1226,6 @@ void HistoryWidget::fieldChanged() {
 	}
 
 	updateSendButtonType();
-	if (showRecordButton()) {
-		_previewCancelled = false;
-	}
 	if (updateCmdStartShown()) {
 		updateControlsVisibility();
 		updateControlsGeometry();
@@ -1416,10 +1335,6 @@ void HistoryWidget::writeDrafts() {
 	}
 }
 
-bool HistoryWidget::isRecording() const {
-	return _voiceRecordBar->isRecording();
-}
-
 void HistoryWidget::activate() {
 	if (_history) {
 		if (!_historyInited) {
@@ -1437,7 +1352,6 @@ void HistoryWidget::setInnerFocus() {
 	} else if (_list) {
 		if (_nonEmptySelection
 			|| (_list && _list->wasSelectedText())
-			|| isRecording()
 			|| isBotStart()
 			|| isBlocked()
 			|| !_canSendMessages) {
@@ -2155,9 +2069,6 @@ void HistoryWidget::updateControlsVisibility() {
 		if (_tabbedPanel) {
 			_tabbedPanel->hide();
 		}
-		if (_voiceRecordBar) {
-			_voiceRecordBar->hideFast();
-		}
 		if (_inlineResults) {
 			_inlineResults->hide();
 		}
@@ -2248,9 +2159,6 @@ void HistoryWidget::updateControlsVisibility() {
 		_botCommandStart->hide();
 		if (_tabbedPanel) {
 			_tabbedPanel->hide();
-		}
-		if (_voiceRecordBar) {
-			_voiceRecordBar->hideFast();
 		}
 		if (_inlineResults) {
 			_inlineResults->hide();
@@ -3035,9 +2943,6 @@ void HistoryWidget::hideChildWidgets() {
 	if (_pinnedBar) {
 		_pinnedBar->hide();
 	}
-	if (_voiceRecordBar) {
-		_voiceRecordBar->hideFast();
-	}
 	hideChildren();
 }
 
@@ -3061,11 +2966,6 @@ void HistoryWidget::send(Api::SendOptions options) {
 		saveEditMsg();
 		return;
 	} else if (!options.scheduled && showSlowmodeError()) {
-		return;
-	}
-
-	if (_voiceRecordBar && _voiceRecordBar->isListenState()) {
-		_voiceRecordBar->requestToSendWithOptions(options);
 		return;
 	}
 
@@ -3156,8 +3056,6 @@ auto HistoryWidget::computeSendButtonType() const {
 		return Type::Save;
 	} else if (_isInlineBot) {
 		return Type::Cancel;
-	} else if (showRecordButton()) {
-		return Type::Record;
 	}
 	return Type::Send;
 }
@@ -3377,7 +3275,7 @@ void HistoryWidget::sendButtonClicked() {
 	const auto type = _send->type();
 	if (type == Ui::SendButton::Type::Cancel) {
 		cancelInlineBot();
-	} else if (type != Ui::SendButton::Type::Record) {
+	} else {
 		send({});
 	}
 }
@@ -3648,14 +3546,6 @@ bool HistoryWidget::isMuteUnmute() const {
 			|| _peer->isRepliesChat());
 }
 
-bool HistoryWidget::showRecordButton() const {
-	return Media::Capture::instance()->available()
-		&& !_voiceRecordBar->isListenState()
-		&& !HasSendText(_field)
-		&& !readyToForward()
-		&& !_editMsgId;
-}
-
 bool HistoryWidget::showInlineBotCancel() const {
 	return _inlineBot && !_inlineLookingUpBot;
 }
@@ -3678,7 +3568,7 @@ void HistoryWidget::updateSendButtonType() {
 	}();
 	_send->setSlowmodeDelay(delay);
 	_send->setDisabled(disabledBySlowmode
-		&& (type == Type::Send || type == Type::Record));
+		&& (type == Type::Send));
 
 	if (delay != 0) {
 		base::call_delayed(
@@ -3920,7 +3810,6 @@ void HistoryWidget::moveFieldControls() {
 	_field->moveToLeft(left, bottom - _field->height() - st::historySendPadding);
 	auto right = st::historySendRight;
 	_send->moveToRight(right, buttonsBottom); right += _send->width();
-	_voiceRecordBar->moveToLeft(0, bottom - _voiceRecordBar->height());
 	_tabbedSelectorToggle->moveToRight(right, buttonsBottom);
 	_botKeyboardHide->moveToRight(right, buttonsBottom); right += _botKeyboardHide->width();
 	_botKeyboardShow->moveToRight(right, buttonsBottom);
@@ -4398,7 +4287,6 @@ void HistoryWidget::resizeEvent(QResizeEvent *e) {
 void HistoryWidget::updateControlsGeometry() {
 	_topBar->resizeToWidth(width());
 	_topBar->moveToLeft(0, 0);
-	_voiceRecordBar->resizeToWidth(width());
 
 	moveFieldControls();
 
@@ -4842,9 +4730,6 @@ void HistoryWidget::updateHistoryDownVisibility() {
 		if (!_list || _firstLoadRequest) {
 			return false;
 		}
-		if (_voiceRecordBar->isLockPresent()) {
-			return false;
-		}
 		if (!_history->loadedAtBottom() || _replyReturn) {
 			return true;
 		}
@@ -4886,9 +4771,6 @@ void HistoryWidget::updateUnreadMentionsVisibility() {
 	}
 	const auto unreadMentionsIsShown = [&] {
 		if (!showUnreadMentions || _firstLoadRequest) {
-			return false;
-		}
-		if (_voiceRecordBar->isLockPresent()) {
 			return false;
 		}
 		if (!_history->getUnreadMentionsLoadedCount()) {
@@ -5523,10 +5405,6 @@ void HistoryWidget::editMessage(FullMsgId itemId) {
 }
 
 void HistoryWidget::editMessage(not_null<HistoryItem*> item) {
-	if (_voiceRecordBar && _voiceRecordBar->isListenState()) {
-		Ui::show(Box<InformBox>(tr::lng_edit_caption_voice(tr::now)));
-		return;
-	}
 	if (const auto media = item->media()) {
 		if (media->allowsEditCaption()) {
 			Ui::show(Box<EditCaptionBox>(controller(), item));
@@ -5534,10 +5412,6 @@ void HistoryWidget::editMessage(not_null<HistoryItem*> item) {
 		}
 	}
 
-	if (isRecording()) {
-		// Just fix some strange inconsistency.
-		_send->clearState();
-	}
 	if (!_editMsgId) {
 		if (_replyToId || !_field->empty()) {
 			_history->setLocalDraft(std::make_unique<Data::Draft>(
@@ -6033,7 +5907,6 @@ void HistoryWidget::updateTopBarSelection() {
 	if (!Ui::isLayerShown() && !Core::App().passcodeLocked()) {
 		if (_nonEmptySelection
 			|| (_list && _list->wasSelectedText())
-			|| isRecording()
 			|| isBotStart()
 			|| isBlocked()
 			|| !_canSendMessages) {
@@ -6060,7 +5933,7 @@ void HistoryWidget::updateReplyEditText(not_null<HistoryItem*> item) {
 		st::messageTextStyle,
 		item->inReplyText(),
 		Ui::DialogTextOptions());
-	if (!_field->isHidden() || isRecording()) {
+	if (!_field->isHidden()) {
 		_fieldBarCancel->show();
 		updateMouseTracking();
 	}
@@ -6418,7 +6291,7 @@ void HistoryWidget::paintEvent(QPaintEvent *e) {
 	Painter p(this);
 	const auto clip = e->rect();
 	if (_list) {
-		if (!_field->isHidden() || isRecording()) {
+		if (!_field->isHidden()) {
 			drawField(p, clip);
 		} else if (const auto error = writeRestriction()) {
 			drawRestrictedWrite(p, *error);

@@ -93,8 +93,6 @@ class ContactStatus;
 class Element;
 class PinnedTracker;
 namespace Controls {
-class RecordLock;
-class VoiceRecordBar;
 } // namespace Controls
 } // namespace HistoryView
 
@@ -108,8 +106,6 @@ struct HistoryMessageMarkupButton;
 class HistoryWidget final : public Window::AbstractSectionWidget {
 public:
 	using FieldHistoryAction = Ui::InputField::HistoryAction;
-	using RecordLock = HistoryView::Controls::RecordLock;
-	using VoiceRecordBar = HistoryView::Controls::VoiceRecordBar;
 
 	HistoryWidget(
 		QWidget *parent,
@@ -314,7 +310,6 @@ private:
 	friend inline constexpr bool is_flag_type(TextUpdateEvent) { return true; };
 
 	void initTabbedSelector();
-	void initVoiceRecordBar();
 	void refreshTabbedPanel();
 	void createTabbedPanel();
 	void setTabbedPanel(std::unique_ptr<TabbedPanel> panel);
@@ -556,15 +551,12 @@ private:
 	void inlineBotResolveDone(const MTPcontacts_ResolvedPeer &result);
 	void inlineBotResolveFail(const RPCError &error, const QString &username);
 
-	bool isRecording() const;
-
 	bool isBotStart() const;
 	bool isBlocked() const;
 	bool isJoinChannel() const;
 	bool isMuteUnmute() const;
 	bool updateCmdStartShown();
 	void updateSendButtonType();
-	bool showRecordButton() const;
 	bool showInlineBotCancel() const;
 	void refreshSilentToggle();
 
@@ -679,7 +671,6 @@ private:
 	object_ptr<Ui::IconButton> _botCommandStart;
 	object_ptr<Ui::SilentToggle> _silent = { nullptr };
 	object_ptr<Ui::IconButton> _scheduled = { nullptr };
-	const std::unique_ptr<VoiceRecordBar> _voiceRecordBar;
 	bool _cmdStartShown = false;
 	object_ptr<Ui::InputField> _field;
 	bool _inReplyEditForward = false;
