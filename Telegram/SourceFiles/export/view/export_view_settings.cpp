@@ -314,18 +314,10 @@ void SettingsWidget::addFormatAndLocationLabel(
 			QDir::toNativeSeparators(text),
 			u"internal:edit_export_path"_q);
 	});
-	auto formatLink = value() | rpl::map([](const Settings &data) {
-		return data.format;
-	}) | rpl::distinct_until_changed(
-	) | rpl::map([](Format format) {
-		return Ui::Text::Link("JSON", u"internal:edit_format"_q);
-	});
 	const auto label = container->add(
 		object_ptr<Ui::FlatLabel>(
 			container,
 			tr::lng_export_option_format_location(
-				lt_format,
-				std::move(formatLink),
 				lt_path,
 				std::move(pathLink),
 				Ui::Text::WithEntities),
@@ -337,8 +329,6 @@ void SettingsWidget::addFormatAndLocationLabel(
 		const auto url = handler->dragText();
 		if (url == qstr("internal:edit_export_path")) {
 			chooseFolder();
-		} else if (url == qstr("internal:edit_format")) {
-			chooseFormat();
 		} else {
 			Unexpected("Click handler URL in export limits edit.");
 		}
