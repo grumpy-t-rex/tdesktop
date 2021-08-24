@@ -37,7 +37,6 @@ constexpr auto kStickerMinHeight = 80;
 
 const auto kLineBreak = QByteArrayLiteral("<br>");
 
-using Context = details::HtmlContext;
 using UserpicData = details::UserpicData;
 using PeersMap = details::PeersMap;
 using MediaData = details::MediaData;
@@ -461,50 +460,6 @@ QByteArray PeersMap::wrapUserNames(const std::vector<int32> &data) const {
 		list.push_back(wrapUserName(userId));
 	}
 	return SerializeList(list);
-}
-
-QByteArray HtmlContext::pushTag(
-		const QByteArray &tag,
-		std::map<QByteArray, QByteArray> &&attributes) {
-	auto data = Tag();
-	data.name = tag;
-	auto empty = false;
-	auto inner = QByteArray();
-	for (const auto &[name, value] : attributes) {
-		if (name == "inline") {
-			data.block = false;
-		} else if (name == "empty") {
-			empty = true;
-		} else {
-			inner.append(' ').append(name);
-			inner.append("=\"").append(SerializeString(value)).append("\"");
-		}
-	}
-	auto result = (data.block ? ("\n" + indent()) : QByteArray())
-		+ "<" + data.name + inner + (empty ? "/" : "") + ">"
-		+ (data.block ? "\n" : "");
-	if (!empty) {
-		_tags.push_back(data);
-	}
-	return result;
-}
-
-QByteArray HtmlContext::popTag() {
-	Expects(!_tags.empty());
-
-	const auto data = _tags.back();
-	_tags.pop_back();
-	return (data.block ? ("\n" + indent()) : QByteArray())
-		+ "</" + data.name + ">"
-		+ (data.block ? "\n" : "");
-}
-
-QByteArray HtmlContext::indent() const {
-	return QByteArray(_tags.size(), ' ');
-}
-
-bool HtmlContext::empty() const {
-	return _tags.empty();
 }
 
 } // namespace details
