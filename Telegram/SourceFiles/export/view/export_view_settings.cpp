@@ -63,16 +63,6 @@ void ChooseFormatBox(
 		Fn<void(Output::Format)> done) {
 	using Format = Output::Format;
 	const auto group = std::make_shared<Ui::RadioenumGroup<Format>>(format);
-	const auto addFormatOption = [&](QString label, Format format) {
-		const auto radio = box->addRow(
-			object_ptr<Ui::Radioenum<Format>>(
-				box,
-				group,
-				format,
-				label,
-				st::defaultBoxCheckbox),
-			st::exportSettingPadding);
-	};
 	box->setTitle(tr::lng_export_option_choose_format());
 	box->addButton(tr::lng_settings_save(), [=] { done(group->value()); });
 	box->addButton(tr::lng_cancel(), [=] { box->closeBox(); });
@@ -258,16 +248,6 @@ void SettingsWidget::setupPathAndFormat(
 			data.format = format;
 		});
 	});
-	const auto addFormatOption = [&](QString label, Format format) {
-		const auto radio = container->add(
-			object_ptr<Ui::Radioenum<Format>>(
-				container,
-				formatGroup,
-				format,
-				label,
-				st::defaultBoxCheckbox),
-			st::exportSettingPadding);
-	};
 	addHeader(container, tr::lng_export_header_format(tr::now));
 	addLocationLabel(container);
 }
@@ -338,8 +318,7 @@ void SettingsWidget::addFormatAndLocationLabel(
 		return data.format;
 	}) | rpl::distinct_until_changed(
 	) | rpl::map([](Format format) {
-		const auto text = "JSON";
-		return Ui::Text::Link(text, u"internal:edit_format"_q);
+		return Ui::Text::Link("JSON", u"internal:edit_format"_q);
 	});
 	const auto label = container->add(
 		object_ptr<Ui::FlatLabel>(
