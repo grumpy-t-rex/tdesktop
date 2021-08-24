@@ -32,15 +32,8 @@ QString NormalizePath(const Settings &settings);
 struct Result;
 class Stats;
 
-enum class Format {
-	Html,
-	Json,
-};
-
 class AbstractWriter {
 public:
-	[[nodiscard]] virtual Format format() = 0;
-
 	[[nodiscard]] virtual Result start(
 		const Settings &settings,
 		const Environment &environment,
@@ -85,7 +78,7 @@ public:
 
 };
 
-std::unique_ptr<AbstractWriter> CreateWriter(Format format);
+std::unique_ptr<AbstractWriter> CreateWriter();
 
 } // namespace Output
 } // namespace Export
