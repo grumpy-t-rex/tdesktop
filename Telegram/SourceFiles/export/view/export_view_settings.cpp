@@ -230,13 +230,6 @@ void SettingsWidget::setupPathAndFormat(
 		addLimitsLabel(container);
 		return;
 	}
-	const auto formatGroup = std::make_shared<Ui::RadioenumGroup<Format>>(
-		readData().format);
-	formatGroup->setChangedCallback([=](Format format) {
-		changeData([&](Settings &data) {
-			data.format = format;
-		});
-	});
 	addHeader(container, tr::lng_export_header_format(tr::now));
 	addLocationLabel(container);
 }

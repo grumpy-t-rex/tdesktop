@@ -71,7 +71,6 @@ struct Settings {
 
 	QString path;
 	bool forceSubPath = false;
-	Output::Format format = Output::Format();
 
 	Types types = DefaultTypes();
 	Types fullChats = DefaultFullChats();
