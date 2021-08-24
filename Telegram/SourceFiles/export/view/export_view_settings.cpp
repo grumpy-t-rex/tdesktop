@@ -57,17 +57,6 @@ constexpr auto kMegabyte = 1024 * 1024;
 	});
 }
 
-void ChooseFormatBox(
-		not_null<Ui::GenericBox*> box,
-		Output::Format format,
-		Fn<void(Output::Format)> done) {
-	using Format = Output::Format;
-	const auto group = std::make_shared<Ui::RadioenumGroup<Format>>(format);
-	box->setTitle(tr::lng_export_option_choose_format());
-	box->addButton(tr::lng_settings_save(), [=] { done(group->value()); });
-	box->addButton(tr::lng_cancel(), [=] { box->closeBox(); });
-}
-
 } // namespace
 
 int SizeLimitByIndex(int index) {
@@ -280,24 +269,6 @@ void SettingsWidget::addLocationLabel(
 		return false;
 	});
 #endif // OS_MAC_STORE
-}
-
-void SettingsWidget::chooseFormat() {
-	const auto shared = std::make_shared<QPointer<Ui::GenericBox>>();
-	const auto callback = [=](Format format) {
-		changeData([&](Settings &data) {
-			data.format = format;
-		});
-		if (const auto weak = shared->data()) {
-			weak->closeBox();
-		}
-	};
-	auto box = Box(
-		ChooseFormatBox,
-		readData().format,
-		callback);
-	*shared = Ui::MakeWeak(box.data());
-	_showBoxCallback(std::move(box));
 }
 
 void SettingsWidget::addFormatAndLocationLabel(
