@@ -1750,7 +1750,6 @@ void ComposeControls::setTabbedPanel(
 		std::unique_ptr<ChatHelpers::TabbedPanel> panel) {
 	_tabbedPanel = std::move(panel);
 	if (const auto raw = _tabbedPanel.get()) {
-		_tabbedSelectorToggle->installEventFilter(raw);
 		_tabbedSelectorToggle->setColorOverrides(nullptr, nullptr, nullptr);
 	} else {
 		_tabbedSelectorToggle->setColorOverrides(

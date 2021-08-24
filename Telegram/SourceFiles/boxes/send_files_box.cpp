@@ -721,7 +721,6 @@ void SendFilesBox::setupEmojiPanel() {
 
 	_emojiToggle.create(this, st::boxAttachEmoji);
 	_emojiToggle->setVisible(!_caption->isHidden());
-	_emojiToggle->installEventFilter(_emojiPanel);
 	_emojiToggle->addClickHandler([=] {
 		_emojiPanel->toggleAnimated();
 	});
