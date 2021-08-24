@@ -16,10 +16,6 @@ namespace Export {
 namespace Output {
 namespace details {
 
-struct UserpicData;
-class PeersMap;
-struct MediaData;
-
 } // namespace details
 
 } // namespace Output
