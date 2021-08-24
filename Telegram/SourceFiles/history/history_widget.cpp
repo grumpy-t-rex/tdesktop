@@ -3763,19 +3763,7 @@ void HistoryWidget::toggleTabbedSelectorMode() {
 	if (!_peer) {
 		return;
 	}
-	if (_tabbedPanel) {
-		if (controller()->canShowThirdSection() && !Adaptive::OneColumn()) {
-			Core::App().settings().setTabbedSelectorSectionEnabled(true);
-			Core::App().saveSettingsDelayed();
-			pushTabbedSelectorToThirdSection(
-				_peer,
-				Window::SectionShow::Way::ClearStack);
-		} else {
-			_tabbedPanel->toggleAnimated();
-		}
-	} else {
-		controller()->closeThirdSection();
-	}
+	_tabbedPanel->toggleAnimated();
 }
 
 void HistoryWidget::recountChatWidth() {

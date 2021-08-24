@@ -1763,19 +1763,7 @@ void ComposeControls::toggleTabbedSelectorMode() {
 	if (!_history) {
 		return;
 	}
-	if (_tabbedPanel) {
-		if (_window->canShowThirdSection() && !Adaptive::OneColumn()) {
-			Core::App().settings().setTabbedSelectorSectionEnabled(true);
-			Core::App().saveSettingsDelayed();
-			pushTabbedSelectorToThirdSection(
-				_history->peer,
-				Window::SectionShow::Way::ClearStack);
-		} else {
-			_tabbedPanel->toggleAnimated();
-		}
-	} else {
-		_window->closeThirdSection();
-	}
+	_tabbedPanel->toggleAnimated();
 }
 
 void ComposeControls::updateHeight() {
