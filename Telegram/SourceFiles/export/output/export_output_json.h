@@ -29,10 +29,6 @@ struct JsonContext {
 
 class JsonWriter : public AbstractWriter {
 public:
-	Format format() override {
-		return Format::Json;
-	}
-
 	Result start(
 		const Settings &settings,
 		const Environment &environment,

@@ -46,12 +46,8 @@ QString NormalizePath(const Settings &settings) {
 	return result;
 }
 
-std::unique_ptr<AbstractWriter> CreateWriter(Format format) {
-	switch (format) {
-	case Format::Html: return std::make_unique<HtmlWriter>();
-	case Format::Json: return std::make_unique<JsonWriter>();
-	}
-	Unexpected("Format in Export::Output::CreateWriter.");
+std::unique_ptr<AbstractWriter> CreateWriter() {
+	return std::make_unique<JsonWriter>();
 }
 
 Stats AbstractWriter::produceTestExample(
@@ -60,7 +56,6 @@ Stats AbstractWriter::produceTestExample(
 	auto result = Stats();
 	const auto folder = QDir(path).absolutePath();
 	auto settings = Settings();
-	settings.format = format();
 	settings.path = (folder.endsWith('/') ? folder : (folder + '/'))
 		+ "ExportExample/";
 	settings.types = Settings::Type::AllMask;

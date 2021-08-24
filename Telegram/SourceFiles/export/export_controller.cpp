@@ -240,7 +240,7 @@ void ControllerObject::startExport(
 	_environment = environment;
 
 	_settings.path = Output::NormalizePath(_settings);
-	_writer = Output::CreateWriter(_settings.format);
+	_writer = Output::CreateWriter();
 	fillExportSteps();
 	exportNext();
 }

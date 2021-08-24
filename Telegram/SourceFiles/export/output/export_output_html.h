@@ -44,10 +44,6 @@ class HtmlWriter : public AbstractWriter {
 public:
 	HtmlWriter();
 
-	Format format() override {
-		return Format::Html;
-	}
-
 	Result start(
 		const Settings &settings,
 		const Environment &environment,
